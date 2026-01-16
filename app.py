@@ -547,7 +547,10 @@ def parse_user_query(query: str) -> tuple[str, int]:
     
     # Clean up the topic
     topic = re.sub(r'\d+\s*(articles?|news|stories)?', '', topic, flags=re.IGNORECASE).strip()
-    topic = re.sub(r'^(analyze|get|fetch|find|search|show)\s*(me)?\s*(news|articles?)?\s*(about|on|for)?\s*', '', topic, flags=re.IGNORECASE).strip()
+    topic = re.sub(r'^(analyze|fetch|find|show|search)\s*(me)?\s*(news|articles?)?\s*(about|on|for)?\s*', '', topic, flags=re.IGNORECASE).strip()
+    
+    # Don't strip "get" if it might be part of "get lucky" or similar, but "get 5 articles" is okay to strip
+    topic = re.sub(r'^get\s+(\d+\s+)?(articles?|news)\s+(about|on|for)?', '', topic, flags=re.IGNORECASE).strip()
     
     if not topic:
         topic = "India politics OR India government"
@@ -595,7 +598,10 @@ def run_analysis(topic: str, num_articles: int, status_callback=None) -> tuple[l
         }
         
     except NewsFetcherError as e:
-        return [], f"❌ Failed to fetch news: {e}", {}
+        error_msg = f"❌ Failed to fetch news: {e}"
+        if "No articles found" in str(e):
+            error_msg += "\n\n💡 **Tip:** Try checking for typos or using broader keywords."
+        return [], error_msg, {}
     except AnalyzerError as e:
         return [], f"❌ Analysis error: {e}", {}
     except ValidatorError as e:
@@ -647,14 +653,21 @@ def main():
         st.markdown("<div class='custom-divider'></div>", unsafe_allow_html=True)
         
         st.markdown("### 🎯 Quick Commands")
-        st.markdown("""
-        <div style="color: #a1a1aa; font-size: 0.85rem; line-height: 1.8;">
-        • "Analyze India politics news"<br>
-        • "Get 5 articles about technology"<br>
-        • "What's happening in the stock market?"<br>
-        • "Search for 15 articles on climate"
-        </div>
-        """, unsafe_allow_html=True)
+        if st.button("🇮🇳 India Politics News", use_container_width=True):
+            st.session_state.messages.append({"role": "user", "content": "Analyze India politics news"})
+            st.session_state.trigger_analysis = True
+        
+        if st.button("💻 Tech Trends", use_container_width=True):
+            st.session_state.messages.append({"role": "user", "content": "Get 5 articles about technology"})
+            st.session_state.trigger_analysis = True
+            
+        if st.button("💹 Stock Market", use_container_width=True):
+            st.session_state.messages.append({"role": "user", "content": "What's happening in the stock market?"})
+            st.session_state.trigger_analysis = True
+            
+        if st.button("🌍 Global Climate", use_container_width=True):
+            st.session_state.messages.append({"role": "user", "content": "Search for 15 articles on climate"})
+            st.session_state.trigger_analysis = True
         
         st.markdown("<div class='custom-divider'></div>", unsafe_allow_html=True)
         
@@ -763,11 +776,21 @@ def main():
                         if f"debug_{i}" in st.session_state.results:
                             render_pipeline_inspector(st.session_state.results[f"debug_{i}"])
     
-    # Chat input
-    if prompt := st.chat_input("Ask me about any news topic..."):
-        # Add user message
+    # Handle triggered analysis from buttons OR chat input
+    trigger = False
+    prompt = None
+    
+    if st.session_state.get("trigger_analysis", False):
+        # Result from button click
+        prompt = st.session_state.messages[-1]["content"] if st.session_state.messages else ""
+        st.session_state.trigger_analysis = False
+        trigger = True
+    elif user_input := st.chat_input("Ask me about any news topic..."):
+        prompt = user_input
         st.session_state.messages.append({"role": "user", "content": prompt})
+        trigger = True
         
+    if trigger and prompt:
         # Parse the query - use sidebar settings
         topic, _ = parse_user_query(prompt)
         

@@ -25,6 +25,12 @@ A news analysis pipeline that uses **OpenAI GPT-4o-mini** for primary analysis a
 - **Cross-validation**: Second LLM catches incorrect analysis
 - **Rich Reports**: JSON + Markdown output formats
 
+## 📸 Screenshots
+
+![Main Interface](image/image.png)
+![Analysis Result](image/image%20copy.png)
+![Pipeline View](image/image%20copy%202.png)
+
 ## 🔧 LLM Architecture
 
 | Role | Provider | Model | Purpose |
