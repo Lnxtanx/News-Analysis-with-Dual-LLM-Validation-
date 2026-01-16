@@ -2,7 +2,7 @@
 
 > **Celltron Intelligence - AI Engineer Assignment**  
 > ⏱️ **Built in 2 hours** (Rapid Prototyping)  
-> 🚀 **Deployable on:** [Vercel](https://vercel.com) (API) & [Streamlit Cloud](https://streamlit.io/cloud) (UI)
+> 🚀 **Live Demo:** [Streamlit App](https://news-analysis-dua-lllm.streamlit.app/)
 
 A news analysis pipeline that uses **OpenAI GPT-4o-mini** for primary analysis and **OpenRouter Nemotron** for cross-validation. Features a ChatGPT-style Streamlit UI with clickable articles.
 
