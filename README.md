@@ -1,8 +1,8 @@
 # 📰 News Analyzer with Dual LLM Validation
 
 > **Celltron Intelligence - AI Engineer Assignment**  
-> ⏱️ **Built in 3 hours**  
-> 🚀 **Deployed on:** [Streamlit Cloud](https://streamlit.io/cloud)
+> ⏱️ **Built in 2 hours** (Rapid Prototyping)  
+> 🚀 **Deployable on:** [Vercel](https://vercel.com) (API) & [Streamlit Cloud](https://streamlit.io/cloud) (UI)
 
 A news analysis pipeline that uses **OpenAI GPT-4o-mini** for primary analysis and **OpenRouter Nemotron** for cross-validation. Features a ChatGPT-style Streamlit UI with clickable articles.
 
@@ -10,7 +10,7 @@ A news analysis pipeline that uses **OpenAI GPT-4o-mini** for primary analysis a
 
 ## 👤 Author
 
-**Vivek**  
+**Vivek Kumar Yadav**  
 🌐 Portfolio: [cv.vivekmind.com](https://cv.vivekmind.com)  
 📂 GitHub: [github.com/Lnxtanx](https://github.com/Lnxtanx)
 
@@ -122,22 +122,42 @@ news-analyzer/
     └── test_analyzer.py  # 7 meaningful test cases
 ```
 
-## 🔄 Pipeline Workflow
+## 🏗️ Architecture (Built in 2 Hours)
+This project was architected and built in just 2 hours using a modular agentic approach.
 
+```mermaid
+graph LR
+    User[👤 User] -->|Query| UI[💻 Streamlit UI]
+    UI -->|Fetch| NewsAPI[🌍 NewsAPI]
+    NewsAPI -->|Articles| Agent1[🧠 Agent 1: Analyzer]
+    Agent1 -->|GPT-4o Analysis| Agent2[🛡️ Agent 2: Validator]
+    Agent2 -->|Nemotron Validation| UI
+    subgraph "Dual Agent Pipeline"
+        Agent1
+        Agent2
+    end
 ```
-┌─────────────┐     ┌──────────────────┐     ┌────────────────────┐     ┌──────────────┐
-│  NewsAPI    │────▶│  OpenAI (LLM#1)  │────▶│ OpenRouter (LLM#2) │────▶│  Reports     │
-│  Fetch      │     │  Analyze:        │     │  Validate:         │     │  JSON + MD   │
-│  articles   │     │  gist/sentiment  │     │  accuracy check    │     │              │
-└─────────────┘     └──────────────────┘     └────────────────────┘     └──────────────┘
-```
 
-## ⚠️ Error Handling
+### The "Double-Agent" Logic
+1.  **Fetcher**: Retrieves raw articles from trusted sources.
+2.  **Agent 1 (Analyzer)**: Uses **OpenAI GPT-4o-mini** to read the articles and extract "gist", sentiments, and tones. 
+3.  **Agent 2 (Validator)**: Uses **Nemotron-3-8B** (via OpenRouter) to "grade" Agent 1's work. It checks for hallucinations or bias.
+4.  **UI**: Visualizes this entire flow with a "Pipeline Inspector" so users can see the raw data vs. validated data.
 
-- **API Timeouts**: Exponential backoff with 3 retries
-- **Empty Articles**: Gracefully skipped with error logging
-- **Invalid JSON**: Markdown code block cleanup
-- **Rate Limits**: 1-second delay between API calls
+## ☁️ Deployment Guide
+
+### Option 1: Vercel (API Backend)
+The Flask API (`main.py`) is configured for Vercel.
+1. Install Vercel CLI: `npm i -g vercel`
+2. Run `vercel` in this directory.
+3. Add Environment Variables in Vercel Dashboard (`NEWSAPI_KEY`, etc.).
+
+### Option 2: Streamlit Cloud (Chat UI)
+For the full UI experience (`app.py`):
+1. Push to GitHub.
+2. Go to [share.streamlit.io](https://share.streamlit.io).
+3. Connect repo and point to `app.py`.
+4. Add secrets in the Streamlit dashboard advanced settings.
 
 ## 📝 License
 
