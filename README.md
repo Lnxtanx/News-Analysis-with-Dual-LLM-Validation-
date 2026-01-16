@@ -1,5 +1,9 @@
 # 📰 News Analyzer with Dual LLM Validation
 
+> **Celltron Intelligence - AI Engineer Assignment**  
+> ⏱️ **Built in 3 hours**  
+> 🚀 **Deployed on:** [Streamlit Cloud](https://streamlit.io/cloud)
+
 A news analysis pipeline that uses **OpenAI GPT-4o-mini** for primary analysis and **OpenRouter Nemotron** for cross-validation. Features a ChatGPT-style Streamlit UI with clickable articles.
 
 ---
